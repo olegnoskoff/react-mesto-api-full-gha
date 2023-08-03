@@ -14,7 +14,7 @@
 *Олег Носков\* **(olegnoskoff)**
 
 ## Демо
-Открыть приложение в браузере: [mesto2023.nomoreparties.co] (https://mesto2023.nomoreparties.co)
+Открыть приложение в браузере: [`mesto2023.nomoreparties.co`] (https://mesto2023.nomoreparties.co)
 
 ### Стек технологий:
 
@@ -32,9 +32,9 @@
 
 ## Структура проекта
 
-IP  158.160.28.221
-Frontend  https://mesto2023.nomoreparties.co
-Backend  https://api.mesto2023.students.nomoreparties.co
+`IP/` - 158.160.28.221
+`Frontend/` - https://mesto2023.nomoreparties.co
+`Backend/` - https://api.mesto2023.students.nomoreparties.co
 
 ### Проверка использования секретного ключа для токена
 
