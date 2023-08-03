@@ -1,0 +1,19 @@
+.popup__input {
+  border: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  color: #000000;
+  padding-bottom: 13px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 1.21;
+}
+
+.popup__input::placeholder {
+  color: #c4c4c4;
+  font-weight: 400;
+}
+
+.popup__input:focus {
+  outline-offset: 3px;
+}
