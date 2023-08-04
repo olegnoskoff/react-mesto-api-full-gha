@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
 // Массив доменов, с которых разрешены кросс-доменные запросы
 const allowedCors = [
@@ -32,6 +31,7 @@ function cors(req, res, next) {
       return res.end();
     }
   }
+  next();
 }
 
 module.exports = { cors };
