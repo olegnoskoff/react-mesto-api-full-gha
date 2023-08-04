@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const cors = require('./middlewares/cors');
+const cors = require('cors');
 
 const { routes } = require('./routes');
 const { handleError } = require('./middlewares/handleError');
@@ -17,6 +17,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { PORT = 3000, DATABASE_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
 const app = express();
+app.use(cors());
 
 mongoose
   .connect(DATABASE_URL)
@@ -28,7 +29,6 @@ mongoose
     console.error(err);
   });
 
-app.use(cors);
 app.use(requestLogger); // Переместили подключение логгера запросов перед лимитером
 app.use(helmet());
 
