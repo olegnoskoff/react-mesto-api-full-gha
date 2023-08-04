@@ -1,5 +1,6 @@
-/* eslint-disable no-console */
+/* eslint-disable func-names */
 /* eslint-disable consistent-return */
+/* eslint-disable prefer-arrow-callback */
 const express = require('express');
 
 const app = express();
@@ -11,31 +12,31 @@ const allowedCors = [
   'http://localhost:3000',
 ];
 
-app.use((req, res, next) => {
+app.use(function (req, res, next) {
   const { origin } = req.headers;
-  const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
+  const { method } = req;
 
-  // Проверяем, что источник запроса есть среди разрешённых
+  // Значение для заголовка Access-Control-Allow-Methods по умолчанию (разрешены все типы запросов)
+  const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+
+  // Если источник запроса есть среди разрешенных
   if (allowedCors.includes(origin)) {
+    // Устанавливаем заголовок, который разрешает браузеру запросы с этого источника
     res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
 
-    // Сохраняем список заголовков исходного запроса
-    const requestHeaders = req.headers['access-control-request-headers'];
-    const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
-
+    // Если это предварительный запрос (метод OPTIONS)
     if (method === 'OPTIONS') {
-      // Это предварительный запрос, добавляем нужные заголовки
+      // Сохраняем список заголовков исходного запроса
+      const requestHeaders = req.headers['access-control-request-headers'];
+
+      // Разрешаем кросс-доменные запросы с этими заголовками
       res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
       res.header('Access-Control-Allow-Headers', requestHeaders);
-      return res.sendStatus(204); // Предварительный запрос, отправляем пустой успешный ответ
+
+      // Отправляем ответ и завершаем цикл обработки
+      return res.end();
     }
   }
 
   next();
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
 });

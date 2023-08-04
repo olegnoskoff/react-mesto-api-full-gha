@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const cors = require('cors');
+const cors = require('./middlewares/cors');
 
 const { routes } = require('./routes');
 const { handleError } = require('./middlewares/handleError');
@@ -28,7 +28,7 @@ mongoose
     console.error(err);
   });
 
-app.use(cors());
+app.use(cors);
 app.use(requestLogger); // Переместили подключение логгера запросов перед лимитером
 app.use(helmet());
 
