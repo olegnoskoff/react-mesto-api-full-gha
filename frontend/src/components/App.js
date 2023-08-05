@@ -18,36 +18,43 @@ import api from "../utils/api";
 import auth from "../utils/auth";
 
 function App() {
+  // Состояние попапов
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
     React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
+  // Данные для обработки попапами
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [toBeDeletedCard, setToBeDeletedCard] = React.useState(null);
   const [infoMessage, setInfoMessage] = React.useState(null);
 
+  // Пользователь
   const [currentUser, setCurrentUser] = React.useState({});
+  // Карточки
   const [cards, setCards] = React.useState([]);
+  // Авторизация пользователя
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [email, setEmail] = React.useState("");
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      Promise.all([apiConnect.getUserData(), apiConnect.getInitialCards()])
-        .then(([userItem, initialCards]) => {
-          setCurrentUser(userItem);
-          setCards(initialCards);
+  /**
+   * Получение информации о пользователе и исходных карточек при открытии страницы
+   */
+  React.useEffect(() => {
+    if (isLoggedIn) {
+      api.getUserInfo().then(setCurrentUser).catch(console.error);
+
+      api
+        .getInitialCards()
+        .then((res) => {
+          setCards(res);
         })
-        .catch((err) => {
-          console.log(`Возникла глобальная ошибка, ${err}`);
-        });
+        .catch(console.error);
     }
   }, [isLoggedIn]);
 
+  // Функции открытия/закрытия попапов
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
   }
@@ -77,6 +84,7 @@ function App() {
     setInfoMessage(message);
   }
 
+  // Функции с изменением/обновлением данных на странице
   function handleUpdateUser(userInfo) {
     api
       .setUserInfo(userInfo)
@@ -134,22 +142,21 @@ function App() {
       .catch(console.error);
   }
 
-  useEffect(() => {
+  // Авторизация
+  React.useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      apiAuth
-        .tokenVerification(token)
+      auth
+        .checkToken(token)
         .then((res) => {
+          // setCurrentUser(res);
+          api.setToken(token);
           setIsLoggedIn(true);
-          setEmail(res.email);
-          history.push("/");
+          navigate("/");
         })
-        .catch((err) => {
-          localStorage.removeItem("token");
-          console.log(`Возникла ошибка верификации токена, ${err}`);
-        });
+        .catch(console.error);
     }
-  }, [history, isLoggedIn]);
+  }, [navigate]);
 
   function handleLogin() {
     setIsLoggedIn(true);
@@ -176,7 +183,7 @@ function App() {
                   cards={cards}
                   onCardLike={handleCardLike}
                   onCardDelete={handleCardDelete}
-                  email={email}
+                  email={currentUser.email}
                   onLogout={handleLogout}
                 />
               </ProtectedRoute>
