@@ -34,9 +34,17 @@
 
 ## Структура проекта
 
-`IP/` - 158.160.28.221
-`Frontend/` - https://mesto2023.nomoreparties.co
-`Backend/` - https://api.mesto2023.students.nomoreparties.co
+## Frontend
+
+Frontend приложения размещен по адресу: [https://mesto2023.nomoreparties.co](https://mesto2023.nomoreparties.co)
+
+## Backend
+
+Backend приложения доступен по адресу: [https://api.mesto2023.students.nomoreparties.co](https://api.mesto2023.students.nomoreparties.co)
+
+## IP-адрес сервера
+
+IP-адрес сервера, на котором развернут проект: 158.160.28.221
 
 ### Проверка использования секретного ключа для токена
 
