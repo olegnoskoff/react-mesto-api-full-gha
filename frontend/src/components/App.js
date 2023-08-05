@@ -31,7 +31,7 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [email, setEmail] = React.useState("");
+  // const [email, setEmail] = React.useState("");
 
   const navigate = useNavigate();
 
@@ -175,7 +175,7 @@ function App() {
                   cards={cards}
                   onCardLike={handleCardLike}
                   onCardDelete={handleCardDelete}
-                  email={email}
+                  email={currentUser}
                   onLogout={handleLogout}
                 />
               </ProtectedRoute>

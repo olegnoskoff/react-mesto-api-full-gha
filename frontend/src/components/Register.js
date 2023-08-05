@@ -6,6 +6,7 @@ import Header from "./Header";
 
 import auth from "../utils/auth";
 
+
 function Register({ handleShowInfoMessage }) {
   const defaultValues = {
     email: "",
