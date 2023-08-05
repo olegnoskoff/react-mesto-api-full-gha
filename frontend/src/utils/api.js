@@ -17,8 +17,9 @@ class Api {
     }
   }
 
-  _request(url, options) {
-    return fetch(url, options).then(this._checkResponse);
+  async _request(url, options) {
+    const res = await fetch(url, options);
+    return this._checkResponse(res);
   }
 
   getUserInfo() {
