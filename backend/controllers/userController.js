@@ -15,7 +15,6 @@ const {
 } = require('../errors');
 
 const SALT_LENGTH = 10;
-const { NODE_ENV, JWT_SECRET } = process.env;
 
 async function getAllUsers(req, res, next) {
   try {
@@ -128,7 +127,7 @@ async function login(req, res, next) {
         _id: user._id,
       },
 
-      NODE_ENV === 'production' ? JWT_SECRET : 'secret',
+      'secretkey',
 
       {
         expiresIn: '7d',

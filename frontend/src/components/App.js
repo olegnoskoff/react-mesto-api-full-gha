@@ -1,73 +1,52 @@
 import React from "react";
-
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 
 import Main from "./Main";
-
 import Footer from "./Footer";
-
 import ImagePopup from "./ImagePopup";
-
 import EditProfilePopup from "./EditProfilePopup";
-
 import EditAvatarPopup from "./EditAvatarPopup";
-
 import AddPlacePopup from "./AddPlacePopup";
-
 import ConfirmActionPopup from "./ConfirmActionPopup";
-
 import InfoPopup from "./InfoPopup";
-
 import Register from "./Register";
-
 import Login from "./Login";
-
 import ProtectedRoute from "./ProtectedRoute";
 
 import CurrentUserContext from "../contexts/CurrentUserContext";
-
 import api from "../utils/api";
-
 import auth from "../utils/auth";
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
-
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
     React.useState(false);
-
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-
   const [selectedCard, setSelectedCard] = React.useState(null);
-
   const [toBeDeletedCard, setToBeDeletedCard] = React.useState(null);
-
   const [infoMessage, setInfoMessage] = React.useState(null);
 
   const [currentUser, setCurrentUser] = React.useState({});
-
   const [cards, setCards] = React.useState([]);
-
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-
   const [email, setEmail] = React.useState("");
 
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    api.getUserInfo().then(setCurrentUser).catch(console.error);
-
-    api
-
-      .getInitialCards()
-
-      .then((res) => {
-        setCards(res);
-      })
-
-      .catch(console.error);
-  }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Promise.all([apiConnect.getUserData(), apiConnect.getInitialCards()])
+        .then(([userItem, initialCards]) => {
+          setCurrentUser(userItem);
+          setCards(initialCards);
+        })
+        .catch((err) => {
+          console.log(`Возникла глобальная ошибка, ${err}`);
+        });
+    }
+  }, [isLoggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -83,15 +62,10 @@ function App() {
 
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
-
     setIsEditProfilePopupOpen(false);
-
     setIsAddPlacePopupOpen(false);
-
     setSelectedCard(null);
-
     setToBeDeletedCard(null);
-
     setInfoMessage(null);
   }
 
@@ -105,59 +79,43 @@ function App() {
 
   function handleUpdateUser(userInfo) {
     api
-
       .setUserInfo(userInfo)
-
       .then((newUserInfo) => {
         setCurrentUser(newUserInfo);
-
         closeAllPopups();
       })
-
       .catch(console.error);
   }
 
   function handleUpdateAvatar({ avatar }) {
     api
-
       .changeAvatar(avatar)
-
       .then((newUserInfo) => {
         setCurrentUser(newUserInfo);
-
         closeAllPopups();
       })
-
       .catch(console.error);
   }
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((person) => person._id === currentUser._id);
-
     api
-
       .toggleLike(card._id, isLiked)
-
       .then((newCard) => {
         setCards((state) =>
           state.map((c) => (c._id === card._id ? newCard : c))
         );
       })
-
       .catch(console.error);
   }
 
   function handleAddPlace(newPlaceData) {
     api
-
       .addNewCard(newPlaceData)
-
       .then((newCard) => {
         setCards((state) => [newCard, ...state]);
-
         closeAllPopups();
       })
-
       .catch(console.error);
   }
 
@@ -167,39 +125,31 @@ function App() {
 
   function handleConfirmDelete() {
     const cardId = toBeDeletedCard._id;
-
     api
-
       .deleteCard(cardId)
-
       .then(() => {
         setCards((state) => state.filter((card) => card._id !== cardId));
-
         closeAllPopups();
       })
-
       .catch(console.error);
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (token) {
-      auth
-
-        .checkToken(token)
-
+      apiAuth
+        .tokenVerification(token)
         .then((res) => {
-          setEmail(res.data.email);
-
           setIsLoggedIn(true);
-
-          navigate("/");
+          setEmail(res.email);
+          history.push("/");
         })
-
-        .catch(console.error);
+        .catch((err) => {
+          localStorage.removeItem("token");
+          console.log(`Возникла ошибка верификации токена, ${err}`);
+        });
     }
-  }, [navigate]);
+  }, [history, isLoggedIn]);
 
   function handleLogin() {
     setIsLoggedIn(true);
@@ -207,7 +157,6 @@ function App() {
 
   function handleLogout() {
     localStorage.removeItem("token");
-
     setIsLoggedIn(false);
   }
 
@@ -256,11 +205,9 @@ function App() {
             }
           />
         </Routes>
-
         <Footer />
 
         {/* Попапы */}
-
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
