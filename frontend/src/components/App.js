@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 
@@ -35,15 +36,18 @@ function App() {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    api.getUserInfo().then(setCurrentUser).catch(console.error);
+    if (isLoggedIn) {
+      api.getUserInfo().then(setCurrentUser).catch(console.error);
 
-    api
-      .getInitialCards()
-      .then((res) => {
-        setCards(res);
-      })
-      .catch(console.error);
-  }, []);
+      api
+        .getInitialCards()
+        .then((res) => {
+          setCards(res);
+        })
+        .catch(console.error);
+    }
+
+  }, [isLoggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -137,7 +141,8 @@ function App() {
       auth
         .checkToken(token)
         .then((res) => {
-          setEmail(res.data.email);
+          // setCurrentUser(res);
+          api.setToken(token);
           setIsLoggedIn(true);
           navigate("/");
         })
