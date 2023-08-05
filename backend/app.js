@@ -1,6 +1,4 @@
-/* eslint-disable import/no-unresolved */
 /* eslint-disable no-console */
-
 require('dotenv').config();
 
 const express = require('express');
@@ -17,7 +15,11 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { PORT = 3000, DATABASE_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
 const app = express();
-app.use(cors());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 минут
+  max: 100, // 100 запросов с одного IP
+});
 
 mongoose
   .connect(DATABASE_URL)
@@ -29,16 +31,17 @@ mongoose
     console.error(err);
   });
 
-app.use(requestLogger); // Переместили подключение логгера запросов перед лимитером
-app.use(helmet());
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 минут
-  max: 100, // 100 запросов с одного IP
-});
-
 app.use(limiter);
 
+app.use(cors());
+
+app.use(requestLogger);
+
+app.use(helmet());
+
+// Краш-тест сервера
+// (вызывает принудительное падение сервера
+// для проверки автоматического перезапуска)
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
@@ -46,8 +49,11 @@ app.get('/crash-test', () => {
 });
 
 app.use(routes);
+
 app.use(errorLogger);
+
 app.use(errors()); // обработчик ошибок celebrate
+
 app.use(handleError);
 
 app.listen(PORT, () => {
