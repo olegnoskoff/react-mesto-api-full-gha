@@ -47,6 +47,6 @@ class Auth {
   }
 }
 
-const auth = new Auth("https://auth.nomoreparties.co");
+const auth = new Auth("https://api.mesto2023.students.nomoreparties.co");
 
 export default auth;
