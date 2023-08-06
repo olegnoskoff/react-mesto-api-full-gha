@@ -30,7 +30,7 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [email] = React.useState("");
+  const [email, setEmail] = React.useState("");
 
   const navigate = useNavigate();
 
@@ -45,7 +45,6 @@ function App() {
         })
         .catch(console.error);
     }
-
   }, [isLoggedIn]);
 
   function handleEditAvatarClick() {
@@ -102,9 +101,7 @@ function App() {
     api
       .toggleLike(card._id, isLiked)
       .then((newCard) => {
-        setCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c))
-        );
+        setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
       })
       .catch(console.error);
   }
@@ -140,8 +137,9 @@ function App() {
       auth
         .checkToken(token)
         .then((res) => {
-          api.setToken(token);
+          setEmail(res.email);
           setIsLoggedIn(true);
+          api.setToken(token);
           navigate("/");
         })
         .catch(console.error);

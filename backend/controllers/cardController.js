@@ -31,7 +31,7 @@ async function deleteCard(req, res, next) {
   try {
     const { cardId } = req.params;
 
-    const card = await Card.findById(cardId).populate('owner');
+    const card = await Card.findById(cardId).populate('owner').populate('likes');
 
     if (!card) {
       throw new NotFoundError('Карточка не найдена');
@@ -59,7 +59,7 @@ async function putLike(req, res, next) {
       req.params.cardId,
       { $addToSet: { likes: userId } }, // добавить _id в массив, если его там нет
       { new: true },
-    );
+    ).populate('likes');
 
     if (!card) {
       throw new NotFoundError('Карточка не найдена');

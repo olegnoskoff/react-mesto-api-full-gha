@@ -49,7 +49,6 @@ app.get('/crash-test', () => {
 });
 
 app.use(routes);
-
 app.use(errorLogger);
 
 app.use(errors()); // обработчик ошибок celebrate

@@ -16,6 +16,9 @@ class Api {
     }
   }
 
+  setToken(token) {
+    this._headers.authorization = `Bearer ${token}`;
+  }
   _request(url, options) {
     return fetch(url, options).then(this._checkResponse);
   }

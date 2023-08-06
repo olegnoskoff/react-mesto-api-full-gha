@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');
-
+const { NODE_ENV, JWT_SECRET } = process.env;
 const { User } = require('../models/user');
 
 const {
@@ -93,7 +93,6 @@ async function createUser(req, res, next) {
 async function getCurrentUser(req, res, next) {
   try {
     const userId = req.user._id;
-
     const user = await User.findById(userId);
 
     if (!user) {
@@ -127,7 +126,7 @@ async function login(req, res, next) {
         _id: user._id,
       },
 
-      'secretkey',
+      NODE_ENV === 'production' ? JWT_SECRET : 'secret',
 
       {
         expiresIn: '7d',
