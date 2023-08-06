@@ -3,7 +3,6 @@ import { apiConfig } from "./apiConfig";
 class Api {
   constructor({ baseUrl, headers }) {
     this._baseUrl = baseUrl;
-
     this._headers = headers;
   }
 
@@ -23,25 +22,19 @@ class Api {
 
   getUserInfo() {
     const url = `${this._baseUrl}/users/me`;
-
     return this._request(url, {
       method: "GET",
-
       headers: this._headers,
     });
   }
 
   setUserInfo({ name, about }) {
     const url = `${this._baseUrl}/users/me`;
-
     return this._request(url, {
       method: "PATCH",
-
       headers: this._headers,
-
       body: JSON.stringify({
         name,
-
         about,
       }),
     });
@@ -49,12 +42,9 @@ class Api {
 
   changeAvatar(link) {
     const url = `${this._baseUrl}/users/me/avatar`;
-
     return this._request(url, {
       method: "PATCH",
-
       headers: this._headers,
-
       body: JSON.stringify({
         avatar: link,
       }),
@@ -63,25 +53,19 @@ class Api {
 
   getInitialCards() {
     const url = `${this._baseUrl}/cards`;
-
     return this._request(url, {
       method: "GET",
-
       headers: this._headers,
     });
   }
 
   addNewCard({ name, link }) {
     const url = `${this._baseUrl}/cards`;
-
     return this._request(url, {
       method: "POST",
-
       headers: this._headers,
-
       body: JSON.stringify({
         name,
-
         link,
       }),
     });
@@ -89,30 +73,24 @@ class Api {
 
   deleteCard(cardId) {
     const url = `${this._baseUrl}/cards/${cardId}`;
-
     return this._request(url, {
       method: "DELETE",
-
       headers: this._headers,
     });
   }
 
   _setLike(cardId) {
     const url = `${this._baseUrl}/cards/${cardId}/likes`;
-
     return this._request(url, {
       method: "PUT",
-
       headers: this._headers,
     });
   }
 
   _deleteLike(cardId) {
     const url = `${this._baseUrl}/cards/${cardId}/likes`;
-
     return this._request(url, {
       method: "DELETE",
-
       headers: this._headers,
     });
   }
